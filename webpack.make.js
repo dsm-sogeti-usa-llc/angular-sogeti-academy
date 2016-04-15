@@ -13,15 +13,19 @@ function getEntry(env) {
     };
 }
 
-module.exports = function(env) {
+function getOutput(env) {
+    return {
+        path: env === 'prod' ? path.join(__dirname) : path.join(__dirname, 'dist'),
+        filename: 'js/[name].js',
+        sourceMapFilename: '[file].map'
+    };
+}
+
+module.exports = function (env) {
     return {
         devtool: 'sourcemap',
         entry: getEntry(env),
-        output: {
-            path: path.join(__dirname, 'dist'),
-            filename: 'js/[name].js',
-            sourceMapFilename: '[file].map'
-        },
+        output: getOutput(env),
         resolve: {
             extensions: ['', '.ts', '.js', '.scss', '.css', '.html']
         },
@@ -45,7 +49,7 @@ module.exports = function(env) {
                         replacements: [
                             {
                                 pattern: /\$apiUrl\$/,
-                                replacement: function(match, p1, offset, string) {
+                                replacement: function (match, p1, offset, string) {
                                     return process.env['Topics:ApiUrl'];
                                 }
                             }
