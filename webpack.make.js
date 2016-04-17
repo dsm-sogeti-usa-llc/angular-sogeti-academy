@@ -21,6 +21,24 @@ function getOutput(env) {
     };
 }
 
+function getPlugins(env) {
+    var plugins = [
+        new HtmlWebpackPlugin({
+            template: './src/index.html',
+            inject: 'body'
+        }),
+        new StringReplacePlugin()
+    ];
+    
+    if (env === 'prod') {
+        plugins.push(new webpack.optimize.DedupePlugin());
+        plugins.push(new webpack.optimize.UglifyJsPlugin());
+        plugins.push(new webpack.optimize.OccurenceOrderPlugin());
+    }
+    
+    return plugins;
+}
+
 module.exports = function (env) {
     return {
         devtool: 'sourcemap',
@@ -58,13 +76,7 @@ module.exports = function (env) {
                 }
             ]
         },
-        plugins: [
-            new HtmlWebpackPlugin({
-                template: './src/index.html',
-                inject: 'body'
-            }),
-            new StringReplacePlugin()
-        ],
+        plugins: getPlugins(env),
         devServer: {
             port: 8082
         }
